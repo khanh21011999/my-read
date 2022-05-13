@@ -31,7 +31,7 @@ export const update = (book, shelf) =>
     },
     body: JSON.stringify({ shelf })
   }).then(res => {
- 
+    console.log("update book", res);
     res.json();
   }
   );
