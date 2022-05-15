@@ -13,7 +13,7 @@ export default class Search extends React.Component {
         };
     }
     getSearchResult = () => {
-        BooksAPI.search(this.state.queryValue).then(data => this.setState({ searchData: data }));
+        BooksAPI.search(this.state.queryValue.toLowerCase()).then(data => this.setState({ searchData: data }));
 
     };
     updateBook = (book, shelf) => {
@@ -87,12 +87,15 @@ export default class Search extends React.Component {
                                         </select>
                                     </div>
                                 </div>
-                                <div className={styles['book-title']}>{item?.title}</div>
+                                <div className={styles['title-and-author-container']}>
+                                    <div className={styles['book-title']}>{item?.title}</div>
+                                    <div className={styles['book-author']}>{item?.authors !== undefined ? item?.authors[0] : `Unknown author`}</div>
+                                </div>
                             </div>
 
 
                         );
-                    })):(
+                    })) : (
                         <div>
                             No result found
                         </div>
