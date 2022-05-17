@@ -14,11 +14,35 @@ export default function Search(props) {
     const location = useLocation();
 
     const getSearchResult = () => {
-        BooksAPI.search(queryValue.toLowerCase()).then(data => { setSearchData([...data, ...props.allBook]); });
+        BooksAPI.search(queryValue.toLowerCase()).then(data => {
+            const searchFiltered = data.map((item, index) => {
+                const matchedData = props.allBook.map((item2, index) => {
+                    if (item.id === item2.id) {
+                        return item2;
+                    }
+                    return null;
+                });
+                const filterNull = matchedData.filter(item => item !== null);
+                console.log("filled null", filterNull.length);
+                if (filterNull.length> 0) {
+                    console.log("filter");
+                
+                    return filterNull[0];
+                }
+                else return {...item, shelf:"none"};
+            });
+           setSearchData(searchFiltered);
+
+           
+
+        });
     };
 
     useEffect(() => {
         getSearchResult();
+
+        console.log("new arr", searchData);
+
     }, [queryValue]);
     const updateBook = (book, shelf) => {
         if (shelf === bookShelf[0]) {
@@ -35,14 +59,13 @@ export default function Search(props) {
         }
         else return null;
     };
-    console.log("allBook", props.allBook);
+    console.log("allBook", searchData);
 
     return (
         <div>
             <div className="search-books">
                 <div className="search-books-bar">
                     <button onClick={() => { props.setShowSearch(false); }} className="close-search" >Close</button>
-
                     <div className="search-books-input-wrapper">
                         <input onChange={(e) => {
                             setQueryValue(e.target.value);
@@ -62,7 +85,7 @@ export default function Search(props) {
                             <div className={styles['book-search-item']} style={{ width: 128, height: 193, backgroundImage: `url(${item?.imageLinks?.thumbnail})` }}>
                                 <div className={styles['book-search-changer']}>
                                     <select
-                                        value={item.shelf === undefined ? "None" : item.shelf}
+                                        value={item.shelf === undefined ? "none" : item.shelf}
                                         onChange={(e) => {
                                             if (e.target.value !== "none") {
                                                 updateBook(item, e.target.value);
