@@ -12,11 +12,11 @@ export default function Search(props) {
     const [queryValue, setQueryValue] = useState('');
     const [searchData, setSearchData] = useState([]);
     const location = useLocation();
-  
-    const getSearchResult = () => {
-        BooksAPI.search(queryValue.toLowerCase()).then(data => {setSearchData(data);});
 
+    const getSearchResult = () => {
+        BooksAPI.search(queryValue.toLowerCase()).then(data => { setSearchData([...data, ...props.allBook]); });
     };
+
     useEffect(() => {
         getSearchResult();
     }, [queryValue]);
@@ -35,11 +35,13 @@ export default function Search(props) {
         }
         else return null;
     };
+    console.log("allBook", props.allBook);
+
     return (
         <div>
             <div className="search-books">
                 <div className="search-books-bar">
-                        <button onClick={()=>{props.setShowSearch(false);}} className="close-search" >Close</button>
+                    <button onClick={() => { props.setShowSearch(false); }} className="close-search" >Close</button>
 
                     <div className="search-books-input-wrapper">
                         <input onChange={(e) => {
@@ -52,7 +54,7 @@ export default function Search(props) {
                     <ol className="books-grid"></ol>
                 </div>
             </div>
-      
+
             <div className={styles['book-search-container']}>
                 {Array.isArray(searchData) ? (searchData?.map((item, index) => {
                     return (
@@ -60,7 +62,7 @@ export default function Search(props) {
                             <div className={styles['book-search-item']} style={{ width: 128, height: 193, backgroundImage: `url(${item?.imageLinks?.thumbnail})` }}>
                                 <div className={styles['book-search-changer']}>
                                     <select
-                                        value={'none'}
+                                        value={item.shelf === undefined ? "None" : item.shelf}
                                         onChange={(e) => {
                                             if (e.target.value !== "none") {
                                                 updateBook(item, e.target.value);

@@ -16,6 +16,7 @@ export default function BooksApp() {
   const [wantToRead, setWantToRead] = useState([]);
   const [read, setRead] = useState([]);
   const [currentShelf, setCurrentShelf] = useState('');
+  const [allBook, setAllBook] = useState([]);
   const [currentAddedBook, setCurrentAddedBook] = useState('');
   const [testState, setTestState] = useState('');
   const [isShowSearch, setShowSearch] = useState(false);
@@ -26,6 +27,7 @@ export default function BooksApp() {
       setCurrentReading(data.filter(item => item.shelf === 'currentlyReading'));
       setWantToRead(data.filter(item => item.shelf === "wantToRead"));
       setRead(data.filter(item => item.shelf === "read"));
+      setAllBook(data);
     }
     );
   }, []);
@@ -64,13 +66,12 @@ export default function BooksApp() {
 
     else return null;
   };
-
-  console.log("current reading", currentlyReading);
-  console.log("want to read", wantToRead);
-  console.log("test state", testState);
+  console.log("all", allBook);
   return (
     <div className="app">
-      {isShowSearch ? (<Search setShowSearch={setShowSearch} currentlyReading={currentlyReading} wantToRead={wantToRead} read={read} />) : (
+      {isShowSearch ? (<Search allBook = {allBook}
+         setShowSearch={setShowSearch}
+        />) : (
         <div className="list-books">
           <div className="list-books-title">
             <h1>MyReads</h1>
