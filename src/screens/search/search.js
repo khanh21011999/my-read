@@ -23,44 +23,74 @@ export default function Search(props) {
                     return null;
                 });
                 const filterNull = matchedData.filter(item => item !== null);
-                console.log("filled null", filterNull.length);
-                if (filterNull.length> 0) {
-                    console.log("filter");
-                
+                if (filterNull.length > 0) {
                     return filterNull[0];
                 }
-                else return {...item, shelf:"none"};
+                else return { ...item, shelf: "none" };
             });
-           setSearchData(searchFiltered);
-
-           
+            setSearchData(searchFiltered);
 
         });
     };
 
     useEffect(() => {
         getSearchResult();
-
-        console.log("new arr", searchData);
-
     }, [queryValue]);
     const updateBook = (book, shelf) => {
+        console.log("book", book);
+        console.log("shelf", shelf);
         if (shelf === bookShelf[0]) {
             BooksAPI.update(book, shelf).then(() => { console.log('success update current read'); });
-
+            const newBook = searchData.map((item, index) => {
+                if (item.id === book.id) {
+                    return {
+                        ...item,
+                        shelf: shelf
+                    };
+                }
+                return item;
+            });
+            setSearchData(newBook);
+            const newData = [...props.currentlyReading,book];
+          
+            props.setCurrentReading(newData);
         }
         else if (shelf === bookShelf[1]) {
             BooksAPI.update(book, shelf).then(() => { console.log('success update want to read'); });
+            const newBook = searchData.map((item, index) => {
+                if (item.id === book.id) {
+                    return {
+                        ...item,
+                        shelf: shelf
+                    };
+                }
+                return item;
+            });
+            setSearchData(newBook);
+            const newData = [...props.wantToRead,book];
+          
+            props.setWantToRead(newData);
+            
 
         }
         else if (shelf === bookShelf[2]) {
             BooksAPI.update(book, shelf).then(() => { console.log('success update read'); });
-
+            const newBook = searchData.map((item, index) => {
+                if (item.id === book.id) {
+                    return {
+                        ...item,
+                        shelf: shelf
+                    };
+                }
+                return item;
+            });
+            setSearchData(newBook);
+            const newData = [...props.read,book];
+          
+            props.setRead(newData);
         }
         else return null;
     };
-    console.log("allBook", searchData);
-
     return (
         <div>
             <div className="search-books">
@@ -89,6 +119,7 @@ export default function Search(props) {
                                         onChange={(e) => {
                                             if (e.target.value !== "none") {
                                                 updateBook(item, e.target.value);
+                                              
                                             }
                                         }}
                                     >

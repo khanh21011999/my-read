@@ -18,9 +18,10 @@ export default function BooksApp() {
   const [currentShelf, setCurrentShelf] = useState('');
   const [allBook, setAllBook] = useState([]);
   const [currentAddedBook, setCurrentAddedBook] = useState('');
-  const [testState, setTestState] = useState('');
+  const [refresh, setRefresh] = useState(false);
   const [isShowSearch, setShowSearch] = useState(false);
   const nav = useNavigate();
+
 
   useEffect(() => {
     BooksAPI.getAll().then((data) => {
@@ -34,6 +35,7 @@ export default function BooksApp() {
   useEffect(() => {
     updateBook(currentAddedBook, currentShelf);
   }, [currentAddedBook, currentShelf]);
+
   const updateBook = (book, shelf) => {
 
     // this.setState({
@@ -47,9 +49,6 @@ export default function BooksApp() {
       newArr.splice(currentlyReading.length, 0, book);
       setCurrentReading(newArr);
 
-
-
-      // setCurrentReading(newArr);
     }
     else if (shelf === bookShelf[1]) {
       BooksAPI.update(book, shelf).then(() => { console.log('success update want to read'); });
@@ -66,10 +65,20 @@ export default function BooksApp() {
 
     else return null;
   };
-  console.log("all", allBook);
+
   return (
     <div className="app">
       {isShowSearch ? (<Search allBook = {allBook}
+      setRefresh={setRefresh}
+      setCurrentReading={setCurrentReading}
+      setWantToRead={setWantToRead}
+      wantToRead={wantToRead}
+      currentlyReading={currentlyReading}
+      read={read}
+      setRead={setRead}
+      
+      refresh={refresh}
+        
          setShowSearch={setShowSearch}
         />) : (
         <div className="list-books">
